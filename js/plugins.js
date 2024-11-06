@@ -6827,6 +6827,7 @@
   };
   Navigation.prototype.onTrigger = function (event) {
     var settings = this._core.settings;
+
     event.page = {
       index: $.inArray(this.current(), this._pages),
       count: this._pages.length,
@@ -6837,6 +6838,12 @@
           : settings.dotsEach || settings.items),
     };
   };
+
+  /**
+   * Gets the current page position of the carousel.
+   * @protected
+   * @returns {Number}
+   */
   Navigation.prototype.current = function () {
     var current = this._core.relative(this._core.current());
     return $.grep(
@@ -6846,10 +6853,17 @@
       }, this)
     ).pop();
   };
+
+  /**
+   * Gets the current succesor/predecessor position.
+   * @protected
+   * @returns {Number}
+   */
   Navigation.prototype.getPosition = function (successor) {
     var position,
       length,
       settings = this._core.settings;
+
     if (settings.slideBy == "page") {
       position = $.inArray(this.current(), this._pages);
       length = this._pages.length;
@@ -6862,14 +6876,35 @@
         ? (position += settings.slideBy)
         : (position -= settings.slideBy);
     }
+
     return position;
   };
+
+  /**
+   * Slides to the next item or page.
+   * @public
+   * @param {Number} [speed=false] - The time in milliseconds for the transition.
+   */
   Navigation.prototype.next = function (speed) {
     $.proxy(this._overrides.to, this._core)(this.getPosition(true), speed);
   };
+
+  /**
+   * Slides to the previous item or page.
+   * @public
+   * @param {Number} [speed=false] - The time in milliseconds for the transition.
+   */
   Navigation.prototype.prev = function (speed) {
     $.proxy(this._overrides.to, this._core)(this.getPosition(false), speed);
   };
+
+  /**
+   * Slides to the specified item or page.
+   * @public
+   * @param {Number} position - The position of the item or page.
+   * @param {Number} [speed] - The time in milliseconds for the transition.
+   * @param {Boolean} [standard=false] - Whether to use the standard behaviour or not.
+   */
   Navigation.prototype.to = function (position, speed, standard) {
     var length;
 
@@ -6979,19 +7014,33 @@
         var hash = window.location.hash.substring(1),
           items = this._core.$stage.children(),
           position = this._hashes[hash] && items.index(this._hashes[hash]);
+
         if (position === undefined || position === this._core.current()) {
           return;
         }
+
         this._core.to(this._core.relative(position), false, true);
       }, this)
     );
   };
+
+  /**
+   * Default options.
+   * @public
+   */
   Hash.Defaults = {
     URLhashListener: false,
   };
+
+  /**
+   * Destroys the plugin.
+   * @public
+   */
   Hash.prototype.destroy = function () {
     var handler, property;
+
     $(window).off("hashchange.owl.navigation");
+
     for (handler in this._handlers) {
       this._core.$element.off(handler, this._handlers[handler]);
     }
@@ -6999,8 +7048,19 @@
       typeof this[property] != "function" && (this[property] = null);
     }
   };
+
   $.fn.owlCarousel.Constructor.Plugins.Hash = Hash;
 })(window.Zepto || window.jQuery, window, document);
+
+/**
+ * Support Plugin
+ *
+ * @version 2.3.1
+ * @author Vivid Planet Software GmbH
+ * @author Artus Kolanowski
+ * @author David Deutsch
+ * @license The MIT License (MIT)
+ */
 (function ($, window, document, undefined) {
   var style = $("<support>").get(0).style,
     prefixes = "Webkit Moz O ms".split(" "),
