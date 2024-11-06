@@ -9,11 +9,11 @@
   }
 })(function ($) {
   "use strict";
-  var Slick = window.Slick || {};
+  let Slick = window.Slick || {};
   Slick = (function () {
-    var instanceUid = 0;
+    let instanceUid = 0;
     function Slick(element, settings) {
-      var _ = this,
+      let _ = this,
         dataSettings;
 
       _.defaults = {
@@ -227,7 +227,7 @@
   };
 
   Slick.prototype.animateHeight = function () {
-    var _ = this;
+    let _ = this;
     if (
       _.options.slidesToShow === 1 &&
       _.options.adaptiveHeight === true &&
@@ -244,7 +244,7 @@
   };
 
   Slick.prototype.animateSlide = function (targetLeft, callback) {
-    var animProps = {},
+    let animProps = {},
       _ = this;
 
     _.animateHeight();
@@ -6170,11 +6170,6 @@
     animateIn: false,
   };
 
-  /**
-   * Toggles the animation classes whenever an translations starts.
-   * @protected
-   * @returns {Boolean|undefined}
-   */
   Animate.prototype.swap = function () {
     if (this.core.settings.items !== 1) {
       return;
@@ -6223,11 +6218,6 @@
       .removeClass(this.core.settings.animateOut);
     this.core.onTransitionEnd();
   };
-
-  /**
-   * Destroys the plugin.
-   * @public
-   */
   Animate.prototype.destroy = function () {
     var handler, property;
 
@@ -6241,62 +6231,13 @@
 
   $.fn.owlCarousel.Constructor.Plugins.Animate = Animate;
 })(window.Zepto || window.jQuery, window, document);
-
-/**
- * Autoplay Plugin
- * @version 2.3.1
- * @author Bartosz Wojciechowski
- * @author Artus Kolanowski
- * @author David Deutsch
- * @author Tom De Caluwé
- * @license The MIT License (MIT)
- */
 (function ($, window, document, undefined) {
-  /**
-   * Creates the autoplay plugin.
-   * @class The Autoplay Plugin
-   * @param {Owl} scope - The Owl Carousel
-   */
   var Autoplay = function (carousel) {
-    /**
-     * Reference to the core.
-     * @protected
-     * @type {Owl}
-     */
     this._core = carousel;
-
-    /**
-     * The autoplay timeout id.
-     * @type {Number}
-     */
     this._call = null;
-
-    /**
-     * Depending on the state of the plugin, this variable contains either
-     * the start time of the timer or the current timer value if it's
-     * paused. Since we start in a paused state we initialize the timer
-     * value.
-     * @type {Number}
-     */
     this._time = 0;
-
-    /**
-     * Stores the timeout currently used.
-     * @type {Number}
-     */
     this._timeout = 0;
-
-    /**
-     * Indicates whenever the autoplay is paused.
-     * @type {Boolean}
-     */
     this._paused = true;
-
-    /**
-     * All event handlers.
-     * @protected
-     * @type {Object}
-     */
     this._handlers = {
       "changed.owl.carousel": $.proxy(function (e) {
         if (e.namespace && e.property.name === "settings") {
@@ -6367,23 +6308,12 @@
     // set default options
     this._core.options = $.extend({}, Autoplay.Defaults, this._core.options);
   };
-
-  /**
-   * Default options.
-   * @public
-   */
   Autoplay.Defaults = {
     autoplay: false,
     autoplayTimeout: 5000,
     autoplayHoverPause: false,
     autoplaySpeed: false,
   };
-
-  /**
-   * Transition to the next slide and set a timeout for the next transition.
-   * @private
-   * @param {Number} [speed] - The animation speed for the animations.
-   */
   Autoplay.prototype._next = function (speed) {
     this._call = window.setTimeout(
       $.proxy(this._next, this, speed),
@@ -6400,21 +6330,9 @@
     }
     this._core.next(speed || this._core.settings.autoplaySpeed);
   };
-
-  /**
-   * Reads the current timer value when the timer is playing.
-   * @public
-   */
   Autoplay.prototype.read = function () {
     return new Date().getTime() - this._time;
   };
-
-  /**
-   * Starts the autoplay.
-   * @public
-   * @param {Number} [timeout] - The interval before the next animation starts.
-   * @param {Number} [speed] - The animation speed for the animations.
-   */
   Autoplay.prototype.play = function (timeout, speed) {
     var elapsed;
 
@@ -6446,11 +6364,6 @@
       timeout - elapsed
     );
   };
-
-  /**
-   * Stops the autoplay.
-   * @public
-   */
   Autoplay.prototype.stop = function () {
     if (this._core.is("rotating")) {
       // Reset the clock.
@@ -6462,10 +6375,6 @@
     }
   };
 
-  /**
-   * Pauses the autoplay.
-   * @public
-   */
   Autoplay.prototype.pause = function () {
     if (this._core.is("rotating") && !this._paused) {
       // Pause the clock.
@@ -6476,9 +6385,6 @@
     }
   };
 
-  /**
-   * Destroys the plugin.
-   */
   Autoplay.prototype.destroy = function () {
     var handler, property;
 
@@ -6495,79 +6401,20 @@
   $.fn.owlCarousel.Constructor.Plugins.autoplay = Autoplay;
 })(window.Zepto || window.jQuery, window, document);
 
-/**
- * Navigation Plugin
- * @version 2.3.1
- * @author Artus Kolanowski
- * @author David Deutsch
- * @license The MIT License (MIT)
- */
-(function ($, window, document, undefined) {
-  "use strict";
 
-  /**
-   * Creates the navigation plugin.
-   * @class The Navigation Plugin
-   * @param {Owl} carousel - The Owl Carousel.
-   */
-  var Navigation = function (carousel) {
-    /**
-     * Reference to the core.
-     * @protected
-     * @type {Owl}
-     */
+(function () {
+  let Navigation = function (carousel) {
     this._core = carousel;
-
-    /**
-     * Indicates whether the plugin is initialized or not.
-     * @protected
-     * @type {Boolean}
-     */
     this._initialized = false;
-
-    /**
-     * The current paging indexes.
-     * @protected
-     * @type {Array}
-     */
     this._pages = [];
-
-    /**
-     * All DOM elements of the user interface.
-     * @protected
-     * @type {Object}
-     */
     this._controls = {};
-
-    /**
-     * Markup for an indicator.
-     * @protected
-     * @type {Array.<String>}
-     */
     this._templates = [];
-
-    /**
-     * The carousel element.
-     * @type {jQuery}
-     */
     this.$element = this._core.$element;
-
-    /**
-     * Overridden methods of the carousel.
-     * @protected
-     * @type {Object}
-     */
     this._overrides = {
       next: this._core.next,
       prev: this._core.prev,
       to: this._core.to,
     };
-
-    /**
-     * All event handlers.
-     * @protected
-     * @type {Object}
-     */
     this._handlers = {
       "prepared.owl.carousel": $.proxy(function (e) {
         if (e.namespace && this._core.settings.dotsData) {
@@ -6624,12 +6471,6 @@
     // register event handlers
     this.$element.on(this._handlers);
   };
-
-  /**
-   * Default options.
-   * @public
-   * @todo Rename `slideBy` to `navBy`
-   */
   Navigation.Defaults = {
     nav: false,
     navText: [
@@ -6650,11 +6491,6 @@
     dotsSpeed: false,
     dotsContainer: false,
   };
-
-  /**
-   * Initializes the layout of the plugin and extends the carousel.
-   * @protected
-   */
   Navigation.prototype.initialize = function () {
     var override,
       settings = this._core.settings;
@@ -6827,7 +6663,6 @@
   };
   Navigation.prototype.onTrigger = function (event) {
     var settings = this._core.settings;
-
     event.page = {
       index: $.inArray(this.current(), this._pages),
       count: this._pages.length,
@@ -6838,12 +6673,6 @@
           : settings.dotsEach || settings.items),
     };
   };
-
-  /**
-   * Gets the current page position of the carousel.
-   * @protected
-   * @returns {Number}
-   */
   Navigation.prototype.current = function () {
     var current = this._core.relative(this._core.current());
     return $.grep(
@@ -6853,17 +6682,10 @@
       }, this)
     ).pop();
   };
-
-  /**
-   * Gets the current succesor/predecessor position.
-   * @protected
-   * @returns {Number}
-   */
   Navigation.prototype.getPosition = function (successor) {
     var position,
       length,
       settings = this._core.settings;
-
     if (settings.slideBy == "page") {
       position = $.inArray(this.current(), this._pages);
       length = this._pages.length;
@@ -6876,35 +6698,14 @@
         ? (position += settings.slideBy)
         : (position -= settings.slideBy);
     }
-
     return position;
   };
-
-  /**
-   * Slides to the next item or page.
-   * @public
-   * @param {Number} [speed=false] - The time in milliseconds for the transition.
-   */
   Navigation.prototype.next = function (speed) {
     $.proxy(this._overrides.to, this._core)(this.getPosition(true), speed);
   };
-
-  /**
-   * Slides to the previous item or page.
-   * @public
-   * @param {Number} [speed=false] - The time in milliseconds for the transition.
-   */
   Navigation.prototype.prev = function (speed) {
     $.proxy(this._overrides.to, this._core)(this.getPosition(false), speed);
   };
-
-  /**
-   * Slides to the specified item or page.
-   * @public
-   * @param {Number} position - The position of the item or page.
-   * @param {Number} [speed] - The time in milliseconds for the transition.
-   * @param {Boolean} [standard=false] - Whether to use the standard behaviour or not.
-   */
   Navigation.prototype.to = function (position, speed, standard) {
     var length;
 
